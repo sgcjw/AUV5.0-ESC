@@ -15,7 +15,7 @@ void setup() {
 }
 
 void loop() {
-  checkCANmsg();
+  //checkCANmsg();
   publishCAN();
   delay(1000);
 }
@@ -46,9 +46,9 @@ void CAN_init(){
   mcp2515.setBitrate(CAN_125KBPS);
   mcp2515.setNormalMode();
 
-  canTX.can_id  = 0x00;
+  canTX.can_id  = 0x01;
   canTX.can_dlc = 8;
-  canTX.data[0] = 0x00;
+  canTX.data[0] = 0x01;
   canTX.data[1] = 0x00;
   canTX.data[2] = 0x00;
   canTX.data[3] = 0x00;
