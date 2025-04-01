@@ -1,0 +1,23 @@
+flowchart TD
+    A((Start)) --> B[STATUS := WAIT_FOR_END]
+
+    subgraph Frame Sync
+    B --> C{D := Byte Read\n D = 0x00?}
+    C -->|FALSE| D{STATUS?}
+    D -->|WAIT_FOR_END| C
+    D -->|!WAIT_FOR_END| E{"rx_len < size(rx_buf)?"}
+    E -->|TRUE| F["rx_buf[rx_len] := D"]
+    F --> C
+    E -->|FALSE| G[bad_frame := TRUE\nSTATUS := WAIT_FOR_END]
+    G --> C
+    end
+
+    subgraph Frame Processing
+    C -->|TRUE| H{STATUS}
+    H -->|SYNC| I{bad_frame?}
+    I -->|FALSE| J[Process Frame]
+    I -->|TRUE| K[STATUS := SYNC\nrx_len := 0]
+    J --> K
+    K --> C
+    H --> |!SYNC| K
+    end

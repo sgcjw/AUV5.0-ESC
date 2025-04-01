@@ -1,0 +1,55 @@
+name: PlatformIO CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+  push:
+    branches:
+      - master
+
+defaults:
+  run:
+    # Switch to PlatformIO root
+    working-directory: main
+
+jobs:
+  build:
+    runs-on: [self-hosted, ubuntu-20.04]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      - name: Build PlatformIO Project
+        run: pio run -v
+        
+      # Note: This causes UTF-8 issues on some build environments
+      - name: List environment dependencies
+        run: pio pkg list
+
+      - name: Upload firmware hashes
+        uses: actions/upload-artifact@v3
+        with:
+          name: firmware_hashes
+          path: main/.pio/firmware_hashes.json
+
+      # - name: Upload ELF files
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: firmware_elf
+      #     path: main/.pio/build/*/firmware.elf
