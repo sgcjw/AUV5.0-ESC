@@ -10,9 +10,6 @@ void publish_CAN(void);
 void publishCAN_heartbeat(uint8_t);
 void publishCAN_Hardkill(void);
 void publishPOPB_heartbeats(void);
-void publishBatt_stats(Torqeedo*);
-void publishPMIC_stats(uint8_t);
-void publishPH_Stats(void);
 
 // User-defined battery fuctions
 void reset_batteryheartbeat(void);
